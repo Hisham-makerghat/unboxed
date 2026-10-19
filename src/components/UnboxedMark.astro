@@ -1,0 +1,60 @@
+---
+// The UNBOXED wordmark: UNBOX on purple, ED on coral. "tilted" folds ED back like an open box flap.
+interface Props {
+  /** Any CSS font-size value */
+  size: string;
+  tilted?: boolean;
+  class?: string;
+}
+const { size, tilted = true, class: className } = Astro.props;
+---
+
+<span
+  class:list={['mark', { 'mark--tilted': tilted }, className]}
+  style={`--mark-size: ${size};`}
+  role="img"
+  aria-label="UNBOXED"
+>
+  <span class="mark__unbox" aria-hidden="true">
+    UNBOX
+  </span>
+  <span class="mark__ed" aria-hidden="true">
+    ED
+  </span>
+</span>
+
+<style>
+  .mark {
+    display: flex;
+    align-items: stretch;
+    width: max-content;
+    max-width: 100%;
+    font-family: var(--font-display);
+    font-size: var(--mark-size);
+    line-height: 1;
+    color: var(--white);
+  }
+  .mark--tilted {
+    perspective: 800px;
+  }
+  .mark__unbox,
+  .mark__ed {
+    display: block;
+  }
+  .mark__unbox {
+    background: var(--purple);
+    padding: 0.17em 0.14em 0.03em 0.18em;
+  }
+  .mark__ed {
+    background: var(--coral);
+    padding: 0.17em 0.16em 0.03em 0.12em;
+  }
+  .mark--tilted .mark__unbox {
+    transform: rotateY(-14deg);
+    transform-origin: 100% 50%;
+  }
+  .mark--tilted .mark__ed {
+    transform: rotateY(50deg);
+    transform-origin: 0% 50%;
+  }
+</style>

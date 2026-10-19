@@ -1,0 +1,115 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+import { event, links, meta } from '../content/site';
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og.png', Astro.site);
+const gaId = import.meta.env.PUBLIC_GA_ID;
+
+// Lets search engines show the date and venue with the result
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: `${event.name}: ${event.title}`,
+  description: meta.description,
+  startDate: event.start,
+  endDate: event.end,
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  location: {
+    '@type': 'Place',
+    name: event.venue,
+    address: { '@type': 'PostalAddress', addressLocality: event.city, addressCountry: 'IN' },
+  },
+  image: [ogImage.href],
+  organizer: [
+    { '@type': 'Organization', name: 'MakerGhat', url: links.makerghat },
+    { '@type': 'Organization', name: 'Shikshagraha', url: links.shikshagraha },
+  ],
+  url: canonical.href,
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{meta.title}</title>
+    <meta name="description" content={meta.description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#4A3A80" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Link previews (WhatsApp, LinkedIn, X) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="MakerGhat" />
+    <meta property="og:title" content={`${event.name} · ${event.title}`} />
+    <meta property="og:description" content={meta.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content={`${event.name}: ${event.title}, ${event.dateLong}, ${event.venue}`}
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script is:inline>
+      // Decide before first paint whether the unboxing intro covers the first screen.
+      // It shows once per visit; ?intro=show forces it, ?intro=skip or a #section link skips it,
+      // and people who ask for reduced motion go straight to the details.
+      (function () {
+        var d = document.documentElement;
+        var q = location.search;
+        var show = true;
+        try {
+          show = !sessionStorage.getItem('unboxed:intro-seen');
+        } catch (e) {}
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) show = false;
+        if (/[?&]intro=skip/.test(q) || (location.hash && location.hash !== '#top')) show = false;
+        if (/[?&]intro=show/.test(q)) show = true;
+        d.dataset.intro = show ? 'closed' : 'open';
+      })();
+    </script>
+    <!-- Preload only what the first screen uses -->
+    <Font cssVariable="--font-heading" preload={[{ weight: 700, subset: 'latin' }]} />
+    <Font
+      cssVariable="--font-body"
+      preload={[
+        { weight: 500, subset: 'latin' },
+        { weight: 600, subset: 'latin' },
+      ]}
+    />
+    <Font cssVariable="--font-display" preload={[{ subset: 'latin' }]} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    {gaId && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+        <script is:inline define:vars={{ gaId }}>
+          window.dataLayer = window.dataLayer || [];
+          window.gtag = function () {
+            window.dataLayer.push(arguments);
+          };
+          window.gtag('js', new Date());
+          window.gtag('config', gaId);
+        </script>
+      </>
+    )}
+  </head>
+  <body>
+    <slot />
+    <script>
+      // Count Register clicks by where on the page they happened (only when analytics is set up)
+      document.addEventListener('click', (e) => {
+        const target = (e.target as Element | null)?.closest<HTMLElement>('[data-track]');
+        const gtag = (window as { gtag?: (...args: unknown[]) => void }).gtag;
+        if (target && gtag) gtag('event', 'register_click', { placement: target.dataset.track });
+      });
+    </script>
+  </body>
+</html>

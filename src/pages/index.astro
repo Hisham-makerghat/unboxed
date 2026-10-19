@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import ClassroomsSection from '../components/ClassroomsSection.astro';
+import WhySection from '../components/WhySection.astro';
+import JourneySection from '../components/JourneySection.astro';
+import VisionSection from '../components/VisionSection.astro';
+import CtaSection from '../components/CtaSection.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+---
+
+<Layout>
+  <div class="page">
+    <main>
+      <Hero />
+      <ClassroomsSection />
+      <WhySection />
+      <JourneySection />
+      <VisionSection />
+      <CtaSection />
+    </main>
+    <SiteFooter />
+  </div>
+</Layout>
+
+<style>
+  .page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  main {
+    display: flex;
+    flex-direction: column;
+  }
+</style>

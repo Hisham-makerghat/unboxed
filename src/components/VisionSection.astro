@@ -1,0 +1,66 @@
+---
+// Green band: the vision line. The photo's green ground runs into the band.
+import { Image } from 'astro:assets';
+import photo from '../assets/photos/ph-green.jpg';
+import { vision } from '../content/site';
+---
+
+<section class="vision" aria-label="Our vision">
+  <div class="vision__inner container">
+    <p class="vision__text">{vision.text}</p>
+    <Image
+      src={photo}
+      alt={vision.photoAlt}
+      widths={[270, 400, 615]}
+      sizes="(min-width: 720px) 400px, 270px"
+      class="vision__photo"
+    />
+  </div>
+</section>
+
+<style>
+  .vision {
+    background: var(--green);
+    color: var(--purple-ink);
+  }
+  .vision__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding-top: 52px;
+  }
+  .vision__text {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(29px, 4.2vw, 60px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .vision__inner :global(.vision__photo) {
+    width: min(270px, 100%);
+  }
+  @media (min-width: 720px) {
+    .vision__inner {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 0 48px;
+      padding-top: 0;
+    }
+    .vision__text {
+      flex: 1.3 1 520px;
+      min-width: 0;
+      padding-block: var(--section-pad);
+      line-height: 1.08;
+    }
+    .vision__inner :global(.vision__photo) {
+      flex: 1 1 320px;
+      min-width: 0;
+      width: min(400px, 100%);
+      max-width: 400px;
+      margin-inline: auto;
+    }
+  }
+</style>

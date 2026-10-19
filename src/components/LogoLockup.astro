@@ -1,0 +1,69 @@
+---
+// MakerGhat and Shikshagraha side by side. "dark" is for purple backgrounds,
+// where Shikshagraha's colour logo would disappear, so it switches to white.
+import { Image } from 'astro:assets';
+import mgColor from '../assets/brand/logo-color.svg';
+import mgReverse from '../assets/brand/logo-reverse.svg';
+import sgColor from '../assets/brand/shikshagraha-color.png';
+import sgWhite from '../assets/brand/shikshagraha-white.png';
+
+interface Props {
+  tone: 'light' | 'dark';
+  /** Height of the MakerGhat logo in px from 720px wide; Shikshagraha is sized to match */
+  size?: number;
+  /** Height on phones */
+  sizeSmall?: number;
+  class?: string;
+}
+const { tone, size = 54, sizeSmall = size, class: className } = Astro.props;
+const mg = tone === 'dark' ? mgReverse : mgColor;
+const sg = tone === 'dark' ? sgWhite : sgColor;
+---
+
+<div
+  class:list={['lockup', `lockup--${tone}`, className]}
+  style={`--mg-lg: ${size}px; --mg-sm: ${sizeSmall}px;`}
+>
+  <Image src={mg} alt="MakerGhat" height={size} class="lockup__mg" />
+  <span class="lockup__rule" aria-hidden="true"></span>
+  <Image
+    src={sg}
+    alt="Shikshagraha"
+    height={Math.round(size * 0.7)}
+    densities={[1, 2]}
+    class="lockup__sg"
+  />
+</div>
+
+<style>
+  .lockup {
+    --mg: var(--mg-sm);
+    display: flex;
+    align-items: center;
+    gap: calc(var(--mg) * 0.33);
+  }
+  @media (min-width: 720px) {
+    .lockup {
+      --mg: var(--mg-lg);
+    }
+  }
+  .lockup__mg {
+    height: var(--mg);
+    width: auto;
+  }
+  .lockup__sg {
+    height: calc(var(--mg) * 0.7);
+    width: auto;
+  }
+  .lockup__rule {
+    width: 1.5px;
+    height: calc(var(--mg) * 0.78);
+    flex: none;
+  }
+  .lockup--dark .lockup__rule {
+    background: rgba(255, 255, 255, 0.4);
+  }
+  .lockup--light .lockup__rule {
+    background: var(--kraft-light);
+  }
+</style>

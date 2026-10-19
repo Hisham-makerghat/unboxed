@@ -1,0 +1,383 @@
+---
+// The three rooms, laid out as a route through the day.
+import { Image } from 'astro:assets';
+import magnifier from '../assets/art/ill-magnifier.png';
+import resistor from '../assets/art/el-resistor.png';
+import chip from '../assets/art/el-chip.png';
+import magnet from '../assets/art/el-magnet.png';
+import pencil from '../assets/art/ill-pencil.png';
+import { journey } from '../content/site';
+
+// Colour per room, in order: yellow, coral, green
+const tones = ['yellow', 'coral', 'green'] as const;
+---
+
+<section class="journey" id="journey" aria-labelledby="journey-title">
+  <div class="container">
+    <h2 id="journey-title">{journey.title}</h2>
+    <p class="journey__theme">
+      {journey.themeBefore}
+      <strong>{journey.theme}</strong>
+      {journey.themeAfter}
+    </p>
+
+    <ol class="route" aria-label="The rooms, in order">
+      {journey.rooms.map((room, i) => (
+        <li class={`route__stop route__stop--${tones[i]}`}>
+          {room.number} {room.name}
+        </li>
+      ))}
+    </ol>
+
+    <div class="rooms">
+      {journey.rooms.map((room, i) => (
+        <>
+          {i > 0 && (
+            <div class="connector" aria-hidden="true">
+              <span class="connector__line" />
+              <svg width="16" height="12" viewBox="0 0 16 12">
+                <path d="M1 1h14L8 11z" fill="currentColor" />
+              </svg>
+            </div>
+          )}
+          <article class={`room room--${tones[i]}`} aria-labelledby={`room-${i + 1}`}>
+            <div class="room__panel" aria-hidden="true">
+              <span>{i + 1}</span>
+            </div>
+            <div class="room__body">
+              <span class="room__number" aria-hidden="true">
+                {room.number}
+              </span>
+              <h3 id={`room-${i + 1}`}>{room.name}</h3>
+              <p class="room__tagline">{room.tagline}</p>
+              <p class="room__text">
+                {'bodyLabel' in room && <strong>{room.bodyLabel}</strong>} {room.body}
+              </p>
+              {i === 0 && (
+                <Image
+                  src={magnifier}
+                  alt=""
+                  width={200}
+                  densities={[1, 2]}
+                  class="room__art room__art--corner"
+                />
+              )}
+              {i === 1 && (
+                <div class="room__parts">
+                  <Image
+                    src={resistor}
+                    alt=""
+                    width={110}
+                    densities={[1, 2]}
+                    class="room__part room__part--resistor"
+                  />
+                  <Image
+                    src={chip}
+                    alt=""
+                    width={104}
+                    densities={[1, 2]}
+                    class="room__part room__part--chip"
+                  />
+                  <Image
+                    src={magnet}
+                    alt=""
+                    width={54}
+                    densities={[1, 2]}
+                    class="room__part room__part--magnet"
+                  />
+                </div>
+              )}
+              {i === 2 && (
+                <Image
+                  src={pencil}
+                  alt=""
+                  width={300}
+                  densities={[1, 2]}
+                  class="room__art room__art--pencil"
+                />
+              )}
+            </div>
+          </article>
+        </>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .journey {
+    padding-block: 52px;
+  }
+  .journey .container {
+    padding-inline: 16px;
+  }
+  h2 {
+    margin-inline: auto;
+    max-width: 16em;
+    text-align: center;
+    font-weight: 700;
+    font-size: clamp(28px, 3.6vw, 52px);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+  .journey__theme {
+    margin: 14px 4px 0;
+  }
+  .journey__theme strong {
+    color: var(--purple);
+    font-weight: 700;
+  }
+
+  /* Route chips */
+  .route {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 22px 0 32px;
+    padding: 0;
+    list-style: none;
+  }
+  .route__stop {
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .route__stop--yellow {
+    background: var(--yellow-tint);
+    color: var(--olive);
+  }
+  .route__stop--coral {
+    background: var(--coral-tint);
+    color: var(--coral-ink);
+  }
+  .route__stop--green {
+    background: var(--green-tint);
+    color: var(--green-ink);
+  }
+
+  /* Rooms */
+  .rooms {
+    display: flex;
+    flex-direction: column;
+  }
+  .connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-block: 6px;
+    color: var(--purple);
+  }
+  .connector__line {
+    height: 30px;
+    border-left: 3px dashed currentColor;
+  }
+  .room {
+    --accent: var(--olive);
+    overflow: hidden;
+    border-radius: 24px;
+  }
+  .room--yellow {
+    background: var(--yellow-tint);
+  }
+  .room--coral {
+    --accent: var(--coral-ink);
+    background: var(--coral-tint);
+  }
+  .room--green {
+    --accent: var(--green-ink);
+    background: var(--green-tint);
+  }
+  .room__panel {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 150px;
+    line-height: 0.8;
+    color: var(--purple-ink);
+  }
+  .room--yellow .room__panel {
+    color: var(--purple);
+    background: var(--yellow) url('../assets/art/pattern-yellow.svg') 0 0 / 87px 87px;
+  }
+  .room--coral .room__panel {
+    background: var(--coral) url('../assets/art/pattern-coral.svg') 0 0 / 72px 58px;
+  }
+  .room--green .room__panel {
+    background: var(--green) url('../assets/art/pattern-green.svg') 0 0 / 69px 69px;
+  }
+  .room__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 24px 22px;
+  }
+  .room__number {
+    display: none;
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--accent);
+  }
+  h3 {
+    font-weight: 700;
+    font-size: clamp(30px, 3.4vw, 48px);
+    line-height: 1.05;
+  }
+  .room__tagline {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: clamp(18px, 1.7vw, 23px);
+    line-height: 1.35;
+    color: var(--accent);
+  }
+  .room__text {
+    font-size: 15px;
+  }
+  .room__text strong {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  /* Illustrations hang off the card's bottom-right corner */
+  .room__body :global(.room__art) {
+    align-self: flex-end;
+    margin-right: -22px;
+    margin-bottom: -24px;
+  }
+  .room__body :global(.room__art--corner) {
+    width: 170px;
+  }
+  .room__body :global(.room__art--pencil) {
+    width: 270px;
+    margin-top: 6px;
+  }
+  .room__parts {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    margin-top: 4px;
+  }
+  .room__parts :global(.room__part--resistor) {
+    width: 90px;
+  }
+  .room__parts :global(.room__part--chip) {
+    width: 84px;
+  }
+  .room__parts :global(.room__part--magnet) {
+    width: 44px;
+  }
+
+  @media (min-width: 720px) {
+    .journey {
+      padding-block: var(--section-pad);
+    }
+    .journey .container {
+      padding-inline: var(--gutter);
+    }
+    .journey__theme {
+      max-width: 46em;
+      margin: 20px auto 0;
+      text-align: center;
+      font-size: clamp(17px, 1.5vw, 19px);
+    }
+    .route {
+      gap: 10px;
+      margin: 32px 0 48px;
+    }
+    .route__stop {
+      padding: 8px 16px;
+      font-size: 15px;
+    }
+    /* Dashed arrows between the chips */
+    .route__stop {
+      position: relative;
+    }
+    .route__stop + .route__stop {
+      margin-left: 44px;
+    }
+    .route__stop + .route__stop::before {
+      content: '';
+      position: absolute;
+      left: -44px;
+      top: 50%;
+      width: 34px;
+      height: 12px;
+      margin-top: -6px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='12'%3E%3Cpath d='M0 6h26' stroke='%234A3A80' stroke-width='2' stroke-dasharray='4 4'/%3E%3Cpath d='M26 1l7 5-7 5z' fill='%234A3A80'/%3E%3C/svg%3E")
+        no-repeat;
+    }
+    .connector {
+      padding-block: 8px;
+    }
+    .connector__line {
+      height: 48px;
+    }
+    .room {
+      display: flex;
+      flex-wrap: wrap;
+      border-radius: 32px;
+    }
+    .room--coral {
+      flex-direction: row-reverse;
+      flex-wrap: wrap-reverse;
+    }
+    .room__panel {
+      flex: 1 1 360px;
+      height: auto;
+      min-height: 360px;
+      font-size: clamp(200px, 22vw, 320px);
+    }
+    .room--yellow .room__panel {
+      background-size: 116px 116px;
+    }
+    .room--coral .room__panel {
+      background-size: 96px 78px;
+    }
+    .room--green .room__panel {
+      background-size: 92px 92px;
+    }
+    .room__body {
+      --pad: clamp(32px, 4.4vw, 64px);
+      flex: 1.5 1 480px;
+      min-width: 0;
+      gap: 14px;
+      padding: var(--pad);
+    }
+    .room__number {
+      display: block;
+    }
+    .room__text {
+      max-width: 34em;
+      font-size: 18px;
+    }
+    .room__body :global(.room__art) {
+      margin-right: calc(-1 * var(--pad));
+      margin-bottom: calc(-1 * var(--pad));
+    }
+    .room__body :global(.room__art--corner) {
+      width: 200px;
+    }
+    .room__body :global(.room__art--pencil) {
+      width: 300px;
+      margin-top: 8px;
+      margin-bottom: 0;
+    }
+    .room__parts {
+      gap: 18px;
+      margin-top: 6px;
+    }
+    .room__parts :global(.room__part--resistor) {
+      width: 110px;
+    }
+    .room__parts :global(.room__part--chip) {
+      width: 104px;
+    }
+    .room__parts :global(.room__part--magnet) {
+      width: 54px;
+    }
+  }
+</style>

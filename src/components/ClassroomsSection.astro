@@ -1,0 +1,106 @@
+---
+// Coral band: what UNBOXED is. The photo's coral ground runs into the band.
+import { Image } from 'astro:assets';
+import photo from '../assets/photos/ph-coral.jpg';
+import { classrooms } from '../content/site';
+---
+
+<section class="classrooms" aria-labelledby="classrooms-title">
+  <div class="classrooms__inner container">
+    <div class="classrooms__text">
+      <h2 id="classrooms-title">{classrooms.title}</h2>
+      <p class="classrooms__lead">{classrooms.lead}</p>
+      {classrooms.body.map((p) => (
+        <p>{p}</p>
+      ))}
+      <p class="classrooms__callout">{classrooms.callout}</p>
+    </div>
+    <Image
+      src={photo}
+      alt={classrooms.photoAlt}
+      widths={[300, 460, 748]}
+      sizes="(min-width: 720px) 460px, 300px"
+      class="classrooms__photo"
+    />
+  </div>
+</section>
+
+<style>
+  .classrooms {
+    background: var(--coral);
+    color: var(--purple-ink);
+  }
+  .classrooms__inner {
+    display: flex;
+    flex-direction: column;
+    padding-top: 52px;
+  }
+  .classrooms__text {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  h2 {
+    font-weight: 700;
+    font-size: clamp(30px, 4.4vw, 62px);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+  }
+  .classrooms__lead {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: clamp(18px, 1.6vw, 22px);
+    line-height: 1.45;
+  }
+  .classrooms__callout {
+    padding: 14px 18px;
+    border-radius: 18px;
+    background: var(--ivory);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: clamp(16px, 1.4vw, 19px);
+    line-height: 1.4;
+  }
+  .classrooms__inner :global(.classrooms__photo) {
+    align-self: center;
+    width: min(300px, 100%);
+    margin-top: 24px;
+  }
+  @media (min-width: 720px) {
+    .classrooms__text p {
+      max-width: 36em;
+      font-size: 18px;
+    }
+    .classrooms__text .classrooms__lead {
+      max-width: 34em;
+      font-size: clamp(18px, 1.6vw, 22px);
+    }
+    .classrooms__text .classrooms__callout {
+      max-width: 34em;
+      margin-top: 4px;
+      padding: 16px 24px;
+      border-radius: 20px;
+      font-size: clamp(16px, 1.4vw, 19px);
+    }
+  }
+  @media (min-width: 960px) {
+    .classrooms__inner {
+      flex-direction: row;
+      align-items: flex-end;
+      gap: 48px;
+      padding-top: 0;
+    }
+    .classrooms__text {
+      flex: 1 1 560px;
+      min-width: 0;
+      gap: 20px;
+      padding-block: var(--section-pad);
+    }
+    .classrooms__inner :global(.classrooms__photo) {
+      flex: 0 1 460px;
+      min-width: 0;
+      width: min(460px, 100%);
+      margin-top: 0;
+    }
+  }
+</style>

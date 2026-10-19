@@ -1,0 +1,121 @@
+---
+import { Image } from 'astro:assets';
+import raise from '../assets/art/ill-raise.png';
+import { why } from '../content/site';
+---
+
+<section class="why" aria-labelledby="why-title">
+  <div class="why__inner container">
+    <div class="why__top">
+      <h2 id="why-title">{why.title}</h2>
+      <p class="why__lead">
+        {why.lead} <span class="why__emphasis">{why.leadEmphasis}</span>
+      </p>
+    </div>
+    <div class="why__bottom">
+      <p>{why.silos}</p>
+      <div class="why__ecosystem">
+        <Image src={raise} alt="" width={180} densities={[1, 2]} class="why__art" />
+        <p>{why.ecosystem}</p>
+      </div>
+      <p>{why.together}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .why {
+    background: var(--ivory);
+    padding-block: 52px;
+  }
+  .why__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .why__top {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  h2 {
+    font-weight: 700;
+    font-size: clamp(32px, 3.6vw, 52px);
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    color: var(--purple);
+  }
+  .why__lead {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: clamp(18px, 1.8vw, 25px);
+    line-height: 1.45;
+  }
+  .why__emphasis {
+    color: var(--purple);
+    font-weight: 600;
+  }
+  .why__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding-top: 18px;
+    border-top: 2px solid var(--kraft-rule);
+  }
+  .why__ecosystem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding-block: 6px;
+    text-align: center;
+  }
+  .why__ecosystem :global(.why__art) {
+    width: 140px;
+  }
+  .why__ecosystem p {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(28px, 3vw, 42px);
+    line-height: 1.1;
+    color: var(--purple);
+  }
+  @media (min-width: 720px) {
+    .why {
+      padding-block: var(--section-pad);
+    }
+    .why__inner {
+      gap: clamp(32px, 4vw, 56px);
+    }
+    .why__top {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 20px 56px;
+    }
+    h2 {
+      flex: 1 1 260px;
+    }
+    .why__lead {
+      flex: 2.2 1 560px;
+      min-width: 0;
+    }
+    .why__bottom {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 32px 48px;
+      padding-top: clamp(32px, 4vw, 56px);
+    }
+    .why__bottom > * {
+      flex: 1 1 300px;
+      min-width: 0;
+    }
+    .why__bottom > p {
+      font-size: 18px;
+    }
+    .why__ecosystem :global(.why__art) {
+      width: 180px;
+    }
+  }
+</style>
