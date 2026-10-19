@@ -53,9 +53,12 @@ const shards = [
           <span class="flap flap--back"></span>
           <span class="flap flap--front"></span>
         </span>
+        <span class="face face--front">
+          <Image src={classroom} alt={intro.classroomAlt} class="shard__art" />
+        </span>
         {shards.map((clip, i) => (
           <span class={`shard shard--${i + 1}`} style={`clip-path: ${clip};`}>
-            <Image src={classroom} alt={i === 0 ? intro.classroomAlt : ''} class="shard__art" />
+            <Image src={classroom} alt="" class="shard__art" />
           </span>
         ))}
       </span>
@@ -431,7 +434,22 @@ const shards = [
       transform 1000ms cubic-bezier(0.2, 0.75, 0.25, 1),
       opacity 500ms ease 450ms;
   }
-  .shard :global(.shard__art) {
+  /* An uncut copy of the front sits just behind the four pieces, so the hairline seams
+     between them show the same picture instead of the dark inside of the box.
+     It disappears the moment the box starts breaking. */
+  .face--front {
+    left: 0;
+    top: 0;
+    width: calc(380 * var(--u));
+    height: calc(270 * var(--u));
+    background: var(--kraft-light);
+    transform: translateZ(calc(109 * var(--u)));
+  }
+  :global(:root[data-intro='breaking']) .face--front {
+    visibility: hidden;
+  }
+  .shard :global(.shard__art),
+  .face--front :global(.shard__art) {
     position: absolute;
     left: calc(12 * var(--u));
     top: calc(12 * var(--u));
