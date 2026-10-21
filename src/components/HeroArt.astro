@@ -1,0 +1,252 @@
+---
+// The open box with the UNBOXED mark rising out of it and hands-on making things flying
+// out around it. Everything is placed in % of the card, so it scales with the card.
+// When the page opens, the objects pop out of the box one after another, then float.
+import { Image } from 'astro:assets';
+import UnboxedMark from './UnboxedMark.astro';
+import hand from '../assets/brand/hand-purple.svg';
+import plane from '../assets/art/el-plane.png';
+import bulb from '../assets/art/el-bulb.png';
+import scissors from '../assets/art/el-scissors.png';
+import clips from '../assets/art/el-clips.png';
+import nuts from '../assets/art/el-nuts.png';
+import leds from '../assets/art/el-leds.png';
+import magnet from '../assets/art/el-magnet.png';
+import resistor from '../assets/art/el-resistor.png';
+import chip from '../assets/art/el-chip.png';
+import sparkle from '../assets/art/sparkle-coral.svg';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+
+// x, y: top-left corner in % of the card; w: width in % of the card's width;
+// r: tilt in degrees; d: how long after the first one it pops out (ms)
+const things = [
+  { src: plane, x: 5, y: 7, w: 21, r: -6, d: 0 },
+  { src: bulb, x: 43, y: 3, w: 7, r: 10, d: 120 },
+  { src: scissors, x: 72, y: 6, w: 15, r: 26, d: 60 },
+  { src: clips, x: 25, y: 18, w: 12, r: -10, d: 200 },
+  { src: nuts, x: 61, y: 19, w: 10, r: 8, d: 260 },
+  { src: leds, x: 4, y: 37, w: 9, r: -16, d: 160 },
+  { src: magnet, x: 86, y: 35, w: 9, r: 16, d: 220 },
+  { src: resistor, x: 3, y: 59, w: 15, r: -26, d: 300 },
+  { src: chip, x: 81, y: 58, w: 15, r: 22, d: 340 },
+];
+---
+
+<div class:list={['art', className]} aria-hidden="true">
+  <!-- Dashed trails from the mouth of the box out to some of the objects -->
+  <svg class="art__trails" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <path d="M44 73 C 34 52, 22 36, 15 22" />
+    <path d="M56 73 C 66 52, 76 34, 80 20" />
+    <path d="M40 74 C 26 66, 14 56, 9 49" />
+    <path d="M60 74 C 74 64, 84 54, 90 47" />
+  </svg>
+
+  <Image src={sparkle} alt="" class="art__sparkle" />
+
+  {things.map((t) => (
+    <span
+      class="art__thing"
+      style={`--x: ${t.x}; --y: ${t.y}; --w: ${t.w}; --r: ${t.r}deg; --d: ${t.d}ms;`}
+    >
+      <Image src={t.src} alt="" width={140} densities={[1, 2]} class="art__img" />
+    </span>
+  ))}
+
+  <div class="art__mark">
+    <UnboxedMark size="min(13cqw, 17cqh)" />
+  </div>
+
+  <div class="art__box">
+    <span class="art__flap art__flap--left"></span>
+    <span class="art__flap art__flap--right"></span>
+    <div class="art__front">
+      <svg class="art__arrows" viewBox="0 0 64 40">
+        <g
+          fill="none"
+          stroke="currentColor"
+          stroke-width="5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 36V8M8 18 18 6l10 12"></path>
+          <path d="M46 36V8M36 18 46 6l10 12"></path>
+        </g>
+      </svg>
+      <Image src={hand} alt="" class="art__hand" />
+    </div>
+  </div>
+</div>
+
+<style>
+  .art {
+    /* How long to wait before the objects fly out: short on a plain page load,
+       longer right after the visitor opens the box, so it happens as the box breaks */
+    --base: 250ms;
+    position: relative;
+    container-type: size;
+    overflow: hidden;
+    background: var(--ivory);
+  }
+  :global(:root[data-unboxed]) .art {
+    --base: 1100ms;
+  }
+
+  .art__trails {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: var(--kraft-light);
+    stroke-width: 2;
+    stroke-dasharray: 5 7;
+    stroke-linecap: round;
+  }
+  .art__trails path {
+    vector-effect: non-scaling-stroke;
+  }
+
+  .art :global(.art__sparkle) {
+    position: absolute;
+    top: 3%;
+    right: 4%;
+    width: 8%;
+    height: auto;
+  }
+
+  /* The flying objects: the outer span pops out of the box, the image inside floats */
+  .art__thing {
+    position: absolute;
+    left: calc(var(--x) * 1%);
+    top: calc(var(--y) * 1%);
+    /* On wide, short cards (tablets) size by height instead, so nothing gets huge */
+    width: min(calc(var(--w) * 1%), calc(var(--w) * 1.15cqh));
+    animation: pop-out 800ms cubic-bezier(0.2, 0.9, 0.3, 1.25) both;
+    animation-delay: calc(var(--base) + var(--d));
+  }
+  .art__thing :global(.art__img) {
+    width: 100%;
+    height: auto;
+    transform: rotate(var(--r));
+    animation: float 3.2s ease-in-out infinite alternate;
+    animation-delay: calc(var(--base) + var(--d) + 800ms);
+  }
+  @keyframes pop-out {
+    from {
+      opacity: 0;
+      /* Start at the mouth of the box */
+      transform: translate(
+          calc((50 - var(--x) - var(--w) / 2) * 1cqw),
+          calc((70 - var(--y)) * 1cqh)
+        )
+        scale(0.2);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes float {
+    from {
+      transform: rotate(var(--r)) translateY(0);
+    }
+    to {
+      transform: rotate(calc(var(--r) + 4deg)) translateY(-6%);
+    }
+  }
+
+  /* The mark rises out of the box and settles in the middle */
+  .art__mark {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 45%;
+    display: flex;
+    justify-content: center;
+    transform: translateY(-50%);
+    animation: rise 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--base) - 150ms);
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(calc(-50% + 22cqh)) scale(0.6);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(-50%);
+    }
+  }
+
+  /* While the box covers the screen nothing has come out yet */
+  :global(:root[data-intro='closed']) .art__thing,
+  :global(:root[data-intro='closed']) .art__mark,
+  :global(:root[data-intro='closed']) .art__thing :global(.art__img) {
+    animation: none;
+    opacity: 0;
+  }
+
+  /* The open box */
+  .art__box {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: min(70%, 80cqh);
+    margin-inline: auto;
+    bottom: 0;
+    aspect-ratio: 380 / 132;
+  }
+  .art__flap {
+    position: absolute;
+    top: 0;
+    width: 42%;
+    height: 35%;
+    background: var(--kraft);
+    border-radius: 4px 4px 0 0;
+  }
+  .art__flap--left {
+    left: 2.6%;
+    transform: rotate(-14deg);
+    transform-origin: 100% 100%;
+  }
+  .art__flap--right {
+    right: 2.6%;
+    transform: rotate(14deg);
+    transform-origin: 0% 100%;
+  }
+  .art__front {
+    position: absolute;
+    left: 9%;
+    right: 9%;
+    bottom: 0;
+    height: 85%;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7%;
+    border-radius: 6px 6px 0 0;
+    background: var(--kraft-light);
+    color: var(--kraft-ink);
+  }
+  .art__arrows {
+    width: 17%;
+    height: auto;
+  }
+  .art__front :global(.art__hand) {
+    width: 13%;
+    height: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .art__thing,
+    .art__mark,
+    .art__thing :global(.art__img) {
+      animation: none;
+    }
+  }
+</style>

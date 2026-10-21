@@ -2,8 +2,8 @@
 // Change copy, links or event details in this file only.
 
 export const links = {
-  // Swap for the Luma event page once it exists
-  register: 'https://forms.gle/Hh5Pj9byRD6z1Pcm8',
+  // The Luma event page
+  register: 'https://luma.com/pfurunwu',
   questionsEmail: 'jayashree@makerghat.org',
   makerghat: 'https://makerghat.org',
   shikshagraha: 'https://shikshagraha.org',
@@ -17,7 +17,7 @@ export const links = {
 export const event = {
   name: 'UNBOXED',
   title: 'Reimagining STEM Education',
-  eyebrow: 'An experiential pop-up by MakerGhat',
+  eyebrow: 'An experiential pop-up and Shiksha Samvaad',
   // Machine-readable times for search engines (IST)
   start: '2026-12-12T09:00:00+05:30',
   end: '2026-12-12T17:00:00+05:30',
@@ -33,7 +33,7 @@ export const event = {
 export const meta = {
   title: 'UNBOXED · Reimagining STEM Education · 12 Dec 2026, Mumbai',
   description:
-    'An experiential pop-up by MakerGhat. Walk into the classrooms of the future: 12 December 2026, 9 AM – 5 PM, TUMO Mumbai, Shikha Academy. Register for UNBOXED.',
+    'An experiential pop-up and Shiksha Samvaad. Walk into the classrooms of the future: 12 December 2026, 9 AM – 5 PM, TUMO Mumbai, Shikha Academy. Register for UNBOXED.',
 };
 
 export const intro = {
@@ -41,7 +41,6 @@ export const intro = {
   boxLabel: 'Open the box to see the UNBOXED event details',
   click: 'Click to unbox',
   tap: 'Tap to unbox',
-  skip: 'Skip to event details',
   classroomAlt: 'A traditional classroom with rows of benches facing a blackboard',
 };
 

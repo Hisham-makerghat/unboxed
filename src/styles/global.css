@@ -99,6 +99,15 @@ button {
   outline-color: var(--yellow);
 }
 
+/* While the unboxing intro is up, the box is the whole landing page: no scrolling past it */
+:root[data-intro='closed'],
+:root[data-intro='breaking'],
+:root[data-intro='closed'] body,
+:root[data-intro='breaking'] body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 /* Shared pieces */
 .container {
   width: 100%;

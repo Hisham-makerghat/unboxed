@@ -1,14 +1,9 @@
 ---
 // First screen: the event details (header, headline, open box, ticket) with the
 // unboxing intro laid over them until the visitor opens the box.
-import { Image } from 'astro:assets';
 import IntroBox from './IntroBox.astro';
 import LogoLockup from './LogoLockup.astro';
-import UnboxedMark from './UnboxedMark.astro';
-import sparkle from '../assets/art/sparkle-coral.svg';
-import leds from '../assets/art/el-leds.png';
-import clips from '../assets/art/el-clips.png';
-import hand from '../assets/brand/hand-purple.svg';
+import HeroArt from './HeroArt.astro';
 import { event, hero, links } from '../content/site';
 ---
 
@@ -62,45 +57,7 @@ import { event, hero, links } from '../content/site';
             {hero.explore}
           </a>
         </div>
-        <div class="hero__art" aria-hidden="true">
-          <Image src={sparkle} alt="" class="hero__deco hero__deco--sparkle" />
-          <Image
-            src={leds}
-            alt=""
-            width={46}
-            densities={[1, 2]}
-            class="hero__deco hero__deco--leds"
-          />
-          <Image
-            src={clips}
-            alt=""
-            width={70}
-            densities={[1, 2]}
-            class="hero__deco hero__deco--clips"
-          />
-          <div class="open-box">
-            <span class="open-box__flap open-box__flap--left"></span>
-            <span class="open-box__flap open-box__flap--right"></span>
-            <div class="open-box__mark">
-              <UnboxedMark size="calc(56px * var(--k))" />
-            </div>
-            <div class="open-box__front">
-              <svg class="open-box__arrows" viewBox="0 0 64 40">
-                <g
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M18 36V8M8 18 18 6l10 12"></path>
-                  <path d="M46 36V8M36 18 46 6l10 12"></path>
-                </g>
-              </svg>
-              <Image src={hand} alt="" class="open-box__hand" />
-            </div>
-          </div>
-        </div>
+        <HeroArt class="hero__art" />
       </div>
 
       <dl class="ticket">
@@ -219,13 +176,15 @@ import { event, hero, links } from '../content/site';
   .hero__eyebrow {
     grid-area: eyebrow;
     justify-self: start;
-    padding: 6px 14px;
+    padding: 6px 12px;
     border: 1.5px solid var(--yellow);
-    border-radius: var(--radius-pill);
+    /* Rounded rather than a pill, so it still looks right if it wraps on a narrow phone */
+    border-radius: 16px;
     color: var(--yellow);
     font-weight: 600;
-    font-size: 12px;
-    letter-spacing: 0.08em;
+    font-size: 11px;
+    line-height: 1.4;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
   }
   .hero__title {
@@ -266,7 +225,9 @@ import { event, hero, links } from '../content/site';
     }
     .hero__eyebrow {
       padding: 8px 18px;
+      border-radius: var(--radius-pill);
       font-size: 14px;
+      letter-spacing: 0.08em;
     }
     .hero__actions {
       padding-top: 8px;
@@ -287,101 +248,22 @@ import { event, hero, links } from '../content/site';
     }
   }
 
-  .hero__art {
-    --k: 0.7;
+  .hero__grid :global(.hero__art) {
     grid-area: art;
-    position: relative;
-    overflow: hidden;
-    min-height: 220px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding: 24px 16px 0;
+    height: 300px;
     border-radius: 22px;
-    background: var(--ivory);
   }
   @media (min-width: 720px) {
-    .hero__art {
-      --k: 1;
-      min-height: 400px;
-      padding: 40px 24px 0;
+    .hero__grid :global(.hero__art) {
+      height: 420px;
       border-radius: 28px;
     }
   }
-  .hero__art :global(.hero__deco) {
-    position: absolute;
-    height: auto;
-  }
-  .hero__art :global(.hero__deco--sparkle) {
-    top: calc(26px * var(--k));
-    right: calc(44px * var(--k));
-    width: calc(46px * var(--k));
-  }
-  .hero__art :global(.hero__deco--leds) {
-    top: calc(44px * var(--k));
-    left: calc(52px * var(--k));
-    width: calc(46px * var(--k));
-    transform: rotate(-16deg);
-  }
-  .hero__art :global(.hero__deco--clips) {
-    top: calc(24px * var(--k));
-    left: 44%;
-    width: calc(70px * var(--k));
-  }
-  .open-box {
-    position: relative;
-    width: calc(380px * var(--k));
-    max-width: 100%;
-    height: calc(260px * var(--k));
-  }
-  .open-box__flap {
-    position: absolute;
-    top: calc(128px * var(--k));
-    width: calc(160px * var(--k));
-    height: calc(46px * var(--k));
-    background: var(--kraft);
-    border-radius: 4px 4px 0 0;
-  }
-  .open-box__flap--left {
-    left: calc(10px * var(--k));
-    transform: rotate(-14deg);
-    transform-origin: 100% 100%;
-  }
-  .open-box__flap--right {
-    right: calc(10px * var(--k));
-    transform: rotate(14deg);
-    transform-origin: 0% 100%;
-  }
-  .open-box__mark {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: calc(96px * var(--k));
-    z-index: 1;
-    display: flex;
-    justify-content: center;
-  }
-  .open-box__front {
-    position: absolute;
-    left: calc(34px * var(--k));
-    right: calc(34px * var(--k));
-    bottom: 0;
-    z-index: 2;
-    height: calc(112px * var(--k));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: calc(22px * var(--k));
-    border-radius: 6px 6px 0 0;
-    background: var(--kraft-light);
-    color: var(--kraft-ink);
-  }
-  .open-box__arrows {
-    width: calc(52px * var(--k));
-    height: calc(34px * var(--k));
-  }
-  .open-box__front :global(.open-box__hand) {
-    width: calc(40px * var(--k));
+  @media (min-width: 1000px) {
+    .hero__grid :global(.hero__art) {
+      height: auto;
+      min-height: 420px;
+    }
   }
 
   /* ---------- Ticket ---------- */
@@ -434,6 +316,10 @@ import { event, hero, links } from '../content/site';
     font-weight: 600;
     font-size: 20px;
     line-height: 1.25;
+  }
+  .ticket__date,
+  .ticket__cell--time .ticket__strong {
+    white-space: nowrap;
   }
   .ticket__cell--venue .ticket__strong {
     font-size: 18px;

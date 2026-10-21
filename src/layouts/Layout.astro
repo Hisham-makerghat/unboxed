@@ -73,6 +73,8 @@ const structuredData = {
         if (/[?&]intro=skip/.test(q) || (location.hash && location.hash !== '#top')) show = false;
         if (/[?&]intro=show/.test(q)) show = true;
         d.dataset.intro = show ? 'closed' : 'open';
+        // The box is the landing page, so a reload must not restore a scrolled-down position
+        if (show && 'scrollRestoration' in history) history.scrollRestoration = 'manual';
       })();
     </script>
     <!-- Preload only what the first screen uses -->

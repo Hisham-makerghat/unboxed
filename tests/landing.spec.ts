@@ -22,13 +22,7 @@ test.describe('unboxing intro', () => {
     expect(Math.round(hero!.height)).toBe(viewport.height);
 
     // Logos, box, buttons and the date line all fit on the screen
-    for (const selector of [
-      '.intro .lockup',
-      '.scene',
-      '.intro__open',
-      '.intro__skip',
-      '.intro__facts',
-    ]) {
+    for (const selector of ['.intro .lockup', '.scene', '.intro__open', '.intro__facts']) {
       const box = await page.locator(selector).boundingBox();
       expect(box, selector).not.toBeNull();
       expect(box!.y, `${selector} top`).toBeGreaterThanOrEqual(0);
@@ -61,16 +55,38 @@ test.describe('unboxing intro', () => {
     await expect(page.locator('html')).toHaveAttribute('data-intro', 'open', { timeout: 3000 });
   });
 
-  test('skip goes straight to the details', async ({ page }) => {
+  test('is the whole landing page until the box is opened', async ({ page }) => {
     await page.goto('/');
-    await page.locator('.intro__skip').click();
-    expect(await introState(page)).toBe('open');
-    await expect(page.locator('#hero-title')).toBeFocused();
+    await expect(page.locator('.intro__skip, [data-skip]')).toHaveCount(0);
+
+    // Scrolling does nothing while the box is closed
+    await page.mouse.move(100, 100);
+    await page.mouse.wheel(0, 2000);
+    await page.keyboard.press('End');
+    await page.waitForTimeout(300);
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+
+    // Nothing below the box can be reached
+    const reachable = await page.evaluate(() =>
+      [...document.querySelectorAll('main > *, body footer')]
+        .filter((el) => !el.contains(document.getElementById('intro')))
+        .map((el) => (el as HTMLElement).inert),
+    );
+    expect(reachable.length).toBeGreaterThan(0);
+    expect(reachable.every(Boolean)).toBe(true);
+
+    // Once opened, the page scrolls normally
+    await page.locator('.intro__open').click();
+    await expect(page.locator('html')).toHaveAttribute('data-intro', 'open', { timeout: 3000 });
+    await page.mouse.wheel(0, 1200);
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+    expect(await page.locator('#journey').evaluate((el) => (el as HTMLElement).inert)).toBe(false);
   });
 
   test('shows once per visit', async ({ page }) => {
     await page.goto('/');
-    await page.locator('.intro__skip').click();
+    await page.locator('.intro__open').click();
+    await expect(page.locator('html')).toHaveAttribute('data-intro', 'open', { timeout: 3000 });
     await page.reload();
     expect(await introState(page)).toBe('open');
     await expect(page.locator('#intro')).toBeHidden();

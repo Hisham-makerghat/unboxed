@@ -2,14 +2,10 @@
 // The 1200×630 link-preview image (WhatsApp, LinkedIn, X), drawn with the page's own
 // components. Only served by `astro dev` (see astro.config.mjs); `npm run social`
 // screenshots it into public/og.png.
-import { Font, Image } from 'astro:assets';
+import { Font } from 'astro:assets';
 import '../styles/global.css';
 import LogoLockup from '../components/LogoLockup.astro';
-import UnboxedMark from '../components/UnboxedMark.astro';
-import sparkle from '../assets/art/sparkle-coral.svg';
-import leds from '../assets/art/el-leds.png';
-import clips from '../assets/art/el-clips.png';
-import hand from '../assets/brand/hand-purple.svg';
+import HeroArt from '../components/HeroArt.astro';
 import { event } from '../content/site';
 ---
 
@@ -38,33 +34,7 @@ import { event } from '../content/site';
           </p>
         </div>
       </div>
-      <div class="card__art">
-        <Image src={sparkle} alt="" class="deco deco--sparkle" />
-        <Image src={leds} alt="" width={56} densities={[2]} class="deco deco--leds" />
-        <Image src={clips} alt="" width={84} densities={[2]} class="deco deco--clips" />
-        <div class="open-box">
-          <span class="flap flap--left"></span>
-          <span class="flap flap--right"></span>
-          <div class="open-box__mark">
-            <UnboxedMark size="64px" />
-          </div>
-          <div class="open-box__front">
-            <svg width="60" height="40" viewBox="0 0 64 40">
-              <g
-                fill="none"
-                stroke="currentColor"
-                stroke-width="5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M18 36V8M8 18 18 6l10 12"></path>
-                <path d="M46 36V8M36 18 46 6l10 12"></path>
-              </g>
-            </svg>
-            <Image src={hand} alt="" class="open-box__hand" />
-          </div>
-        </div>
-      </div>
+      <HeroArt class="card__art" />
     </div>
   </body>
 </html>
@@ -124,85 +94,13 @@ import { event } from '../content/site';
     line-height: 1.1;
     color: var(--yellow);
   }
-  .card__art {
-    position: relative;
+  .card :global(.card__art) {
     width: 440px;
     flex: none;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    overflow: hidden;
     border-radius: 28px;
-    background: var(--ivory);
   }
-  .card__art :global(.deco) {
-    position: absolute;
-    height: auto;
-  }
-  .card__art :global(.deco--sparkle) {
-    top: 44px;
-    right: 48px;
-    width: 56px;
-  }
-  .card__art :global(.deco--leds) {
-    top: 70px;
-    left: 50px;
-    width: 56px;
-    transform: rotate(-16deg);
-  }
-  .card__art :global(.deco--clips) {
-    top: 40px;
-    left: 42%;
-    width: 84px;
-  }
-  .open-box {
-    position: relative;
-    width: 420px;
-    height: 300px;
-  }
-  .flap {
-    position: absolute;
-    top: 148px;
-    width: 176px;
-    height: 52px;
-    background: var(--kraft);
-    border-radius: 4px 4px 0 0;
-  }
-  .flap--left {
-    left: 10px;
-    transform: rotate(-14deg);
-    transform-origin: 100% 100%;
-  }
-  .flap--right {
-    right: 10px;
-    transform: rotate(14deg);
-    transform-origin: 0% 100%;
-  }
-  .open-box__mark {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 110px;
-    z-index: 1;
-    display: flex;
-    justify-content: center;
-  }
-  .open-box__front {
-    position: absolute;
-    left: 38px;
-    right: 38px;
-    bottom: 0;
-    z-index: 2;
-    height: 128px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 26px;
-    border-radius: 6px 6px 0 0;
-    background: var(--kraft-light);
-    color: var(--kraft-ink);
-  }
-  .open-box__front :global(.open-box__hand) {
-    width: 46px;
+  /* A still picture: everything in its final place */
+  .card :global(*) {
+    animation: none !important;
   }
 </style>

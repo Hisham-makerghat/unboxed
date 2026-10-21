@@ -36,13 +36,14 @@ elsewhere run `npx playwright install chromium` once.
 **All copy, links and event details are in [`src/content/site.ts`](src/content/site.ts).**
 The text comes from Tab 5 of the concept note.
 
-- **Register link:** `links.register` (currently the RSVP Google Form; swap in the Luma page when it exists). All three Register buttons use it.
+- **Register link:** `links.register`, the Luma event page. All three Register buttons use it.
 - **Date, time, venue:** `event`. These also feed the search-engine event data in the page head.
 - **After changing the title, date or venue,** run `npm run social` to redraw `public/og.png`, the image shown when the link is shared on WhatsApp or LinkedIn.
 
 ## How the intro behaves
 
-The state lives on `<html data-intro="closed | breaking | open">`.
+- While the box is closed it is the whole landing page: the page doesn't scroll and nothing below it can be reached until the box is opened. There is deliberately no Skip.
+  The state lives on `<html data-intro="closed | breaking | open">`.
 
 - It covers exactly one screen, and the box scales down on short screens so everything fits.
 - It shows **once per visit** (remembered in `sessionStorage`), so someone returning to register goes straight to the details.
