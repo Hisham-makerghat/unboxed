@@ -114,6 +114,28 @@ test.describe('page', () => {
     await noSidewaysScroll(page);
   });
 
+  test('the hero art keeps its box, mark and objects at every desktop width', async ({ page }) => {
+    for (const width of [1024, 1200, 1280, 1440]) {
+      await page.setViewportSize({ width, height: 800 });
+      await page.goto('/?intro=skip');
+      const sizes = await page.evaluate(() => {
+        // Layout sizes, so the pop-out animation (which scales things) does not matter
+        const h = (s: string) => (document.querySelector(s) as HTMLElement).offsetHeight;
+        const things = [...document.querySelectorAll('.art__thing')].map(
+          (el) => (el as HTMLElement).offsetWidth,
+        );
+        return {
+          box: h('.art__box'),
+          mark: h('.art__mark .mark'),
+          smallestThing: Math.min(...things),
+        };
+      });
+      expect(sizes.box, `box at ${width}px`).toBeGreaterThan(60);
+      expect(sizes.mark, `mark at ${width}px`).toBeGreaterThan(30);
+      expect(sizes.smallestThing, `objects at ${width}px`).toBeGreaterThan(15);
+    }
+  });
+
   test('every Register button goes to the registration link', async ({ page }) => {
     await page.goto('/?intro=skip');
     const hrefs = await page

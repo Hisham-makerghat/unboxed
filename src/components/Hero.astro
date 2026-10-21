@@ -259,10 +259,12 @@ import { event, hero, links } from '../content/site';
       border-radius: 28px;
     }
   }
+  /* The art sizes its contents from the card's height, so the card always needs a
+     fixed height. Taking it from the text column instead left it with no usable height
+     between about 1000 and 1300 px wide, and everything inside shrank to nothing. */
   @media (min-width: 1000px) {
     .hero__grid :global(.hero__art) {
-      height: auto;
-      min-height: 420px;
+      height: 440px;
     }
   }
 
