@@ -6,12 +6,22 @@ import { chromium } from '@playwright/test';
 import sharp from 'sharp';
 
 const PORT = 4329;
-const base = `http://localhost:${PORT}`;
 
-// Link-preview card: render the dev-only /social-card page and screenshot it
-const dev = spawn(`npx astro dev --port ${PORT}`, { shell: true, stdio: 'ignore' });
+// Link-preview card: render the dev-only /social-card page and screenshot it.
+// Astro allows one dev server per project, so if one is already running, use that one.
+const dev = spawn(`npx astro dev --port ${PORT}`, {
+  shell: true,
+  stdio: ['ignore', 'pipe', 'pipe'],
+});
+let base = `http://localhost:${PORT}`;
+const onOutput = (chunk) => {
+  const running = String(chunk).match(/already running[\s\S]*?URL:\s*(http\S+)/);
+  if (running) base = running[1].replace(/\/$/, '');
+};
+dev.stdout.on('data', onOutput);
+dev.stderr.on('data', onOutput);
 try {
-  await waitFor(`${base}/social-card`);
+  await waitFor(() => `${base}/social-card`);
   const browser = await chromium.launch({ channel: process.env.PW_CHANNEL || undefined });
   const page = await browser.newPage({ viewport: { width: 1200, height: 630 } });
   await page.goto(`${base}/social-card`, { waitUntil: 'networkidle' });
@@ -37,8 +47,10 @@ const icon = await sharp({
 await writeFile('public/apple-touch-icon.png', icon);
 console.log('wrote public/apple-touch-icon.png');
 
-async function waitFor(url, tries = 120) {
+async function waitFor(urlOf, tries = 120) {
+  let url;
   for (let i = 0; i < tries; i++) {
+    url = urlOf();
     try {
       const res = await fetch(url);
       if (res.ok) return;

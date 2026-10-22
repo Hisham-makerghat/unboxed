@@ -68,7 +68,7 @@ src/
 │  ├─ CtaSection            "Ready to unbox what's possible?" (yellow)
 │  ├─ SiteFooter            Logos, licence, socials
 │  ├─ LogoLockup            MakerGhat + Shikshagraha (white Shikshagraha on purple)
-│  └─ UnboxedMark           The UNBOX|ED wordmark
+│  └─ UnboxedMark           The official UNBOXED logo (assets/brand/unboxed-logo*.png)
 ├─ scripts/unbox.ts         Opens the box
 ├─ social/SocialCard.astro  The link-preview card (dev-only page at /social-card)
 └─ styles/global.css        Brand tokens, reset, buttons
